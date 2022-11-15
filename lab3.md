@@ -127,7 +127,7 @@ public:
 };
 ```
 
-你实现的 router 必须继承该抽象类并实现上述两个虚函数。
+**你实现的 router 必须继承该抽象类并实现上述两个虚函数**。
 
 #### 4.1.1. `router_init`
 
@@ -172,7 +172,7 @@ Controller 通过创建多个 router 实例来模拟实机环境。为了使 Con
 RouterProto* create_router_object();
 ```
 
-你应该实现该函数使其创建一个你定义的 router 类对象并返回其指针。
+**你应该实现该函数使其创建一个你定义的 router 类对象并返回其指针**。
 
 Controller 将首先通过 `create_router_object` 创建 router 对象，紧接着调用 `router_init` 完成初始化。
 
