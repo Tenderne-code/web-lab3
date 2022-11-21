@@ -146,7 +146,7 @@ uint8_t TYPE_CONTROL    = 0x02;
 
 #### 3.2.3. PORT VALUE CHANGE
 
-该指令格式为 `<type> <port> <value>` ，其中 `<port>` 为大于 1 的整数, `<value>` 为**非零整数**，一条合法的指令例如 `2 5 6` 。该条指令意为将路由器的 `<port>` 端口对应的链路权值更新为 `<value>` （保证该指令对称出现，即会同时向链路的两端路由器发送指令）。路由器在收到该指令后，应当更新端口所对应链路的权值。
+该指令格式为 `<type> <port> <value>` ，其中 `<port>` 为大于 1 的整数, `<value>` 为**非零整数**，一条合法的指令例如 `2 5 6` 。该条指令意为将路由器的 `<port>` 端口对应的链路权值更新为 `<value>` （保证该指令对称出现，即会同时向链路两端的路由器发送指令）。路由器在收到该指令后，应当更新端口所对应链路的权值。
 
 **我们约定端口号从 1 开始编号。特别地，每个路由器的 1 号端口均与 Controller 连接。**
 
@@ -293,7 +293,7 @@ while(1) {
 1. `new <port_num> <external_port> <external_addr> <available_addr>` 创建一个新的路由器，参数与 `router_init()` 的参数一致， `simulator` 将会返回创建的路由器的编号（正整数） 。该指令将会创建 router 实例并调用 `router_init()` 。注意，当 `external_port = 0` 时，你仍然需要再输入两个任意字符串，例如 `new 2 0 0 0`
 2. `link <router_id> <router_id> <weight>` 连接由 1 中返回的路由器编号指定的两个路由器，链路权值必须为**正整数**，端口号将由 controller 选择。该指令将会向两个路由器分别发送一条 `CHANGE PORT WEIGHT` 报文
 3. `cut <router_id> <router_id>` 断开两个路由器之间的连接。该指令将会向两个路由器分别发送一条 `<value>` 为 -1 的 `CHANGE PORT WEIGHT` 报文 
-4. `weight <router_id> <router_id> <weight>` 修改两个路由器之间的链路权值。该指令将会向两个路由器分别发送一条 `CHANGE PORT WEIGHT` 报文
+4. `weight <router_id> <router_id> <weight>` 修改两个路由器之间的链路权值，链路权值必须为**正整数**。该指令将会向两个路由器分别发送一条 `CHANGE PORT WEIGHT` 报文
 5. `addhost <router_id> <addr>` 在对应路由器上连接一台 host ，其 ip 地址为 `<addr>` 。该指令将会向路由器发送一条 `ADD HOST` 报文
 6. `delhost <addr>` 删除地址为 `<addr>` 的 host 。该指令会向对应路由器发送一条 `<value>` 为 -1 的 `CHANGE PORT WEIGHT` 报文
 7. `trigger` 向所有路由器发送一条 `TRIGGER DV SEND` 报文
@@ -311,8 +311,8 @@ while(1) {
 new 4 2 102.0.0.0/24 117.117.117.0/24
 new 3 0 0 0
 link 1 2 5
-addhost 1 10.0.0.0 2
-addhost 2 10.0.0.1 4
+addhost 1 10.0.0.0
+addhost 2 10.0.0.1
 trigger
 ns
 hostsend 10.0.0.0 10.0.0.1 Hello
@@ -328,8 +328,8 @@ extersend 1 102.0.0.0 117.117.117.0 Hello
 
 ## 6. 分数计算
 
-本次Lab总分 xxx 分
+本次Lab总分 120 分
 
 部分测试点在 Deadline 前放出，全部测试点会在 Deadline 后统一进行测试。我们会在数据点内容中详细描述所有测试点的测试内容。
 
-同学们可以通过 Github 进行自动化测试（Deadline 前只会看到满分为 xxx 分）。
+同学们可以通过 Github 进行自动化测试（Deadline 前只会看到满分为 100 分）。
