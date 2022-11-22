@@ -115,7 +115,7 @@ uint8_t TYPE_CONTROL    = 0x02;
 
 **注意，`src` 与 `dst` 字段为大端法表示，其余字段均为小端法表示**。
 
-**注意，单个报文的长度不应该超过 8192 字节（报头+payload）**。
+**注意，单个报文的长度不应该超过 16384 字节（报头+payload）**。
 
 ### 3.2. 控制指令
 
@@ -212,7 +212,7 @@ public:
 
 **注意，不要在 `router()` 中释放 `packet`**
 
-另外，每个报文的总长度 (header + payload) 不应该超过 8192 字节，我们使用了较大的报文长度以确保你不需要使用多个报文来发送距离向量。如果这个限制仍然太小，那么你应该考虑更改实现方式。
+另外，每个报文的总长度 (header + payload) 不应该超过 16384 字节，我们使用了较大的报文长度以确保你不需要使用多个报文来发送距离向量，数据范围请参见 6.。如果这个限制仍然太小，那么你应该考虑更改实现方式。
 
 > 注意，在 Lab 3 中，我们规定的接口仅给出了入端口号，而没有给出链路另一端对应的路由器，这在某些情况下可能导致路由环路，但由于我们规定了链路权值是正的，因此不会产生环路。
 
@@ -285,10 +285,40 @@ while(1) {
 
 ## 5. 本地运行与测试
 
-你可以在本地编译生成 `simulator` 来运行并手动测试你的路由器。为了便于调试，我们为 `simulator` 提供了 debug 模式。下发文件中提供了 CMake 模板，你可以修改 CMakeList.txt 文件以新增源文件。
+我们提供了自动测试的程序，在接受 Github Classroom 邀请后每位同学有独立的 Github 仓库。
 
+如果无法正常进行测试，请和助教联系。
 
-### 5.1. debug mode
+### 5.1. 获取仓库
+
+1. 从远程仓库 clone 
+2. 在根目录中执行 `git submodule update --init`
+3. 在根目录中执行 `git submodule update --remote`
+4. 在根目录中执行 `mkdir build && cd build && cmake ..`
+
+### 5.2. 编译测试程序
+
+我们提供了本地测试程序，如果需要在本地进行测试，请进行如下步骤：
+
+1. 在根目录中执行 `cd test_local && mkdir build && cd build && cmake .. && make` ，这将编译本地测试程序
+2. 将文件 `test_local/build/lab3_test` 拷贝到 `build/` 中，该操作只需在第一次获取测试程序或测试程序更新后执行
+
+注意，若测试程序发生更新，请执行如下指令获取最新的测试程序（我们会在教学网和微信群进行通知）：
+
+在根目录中执行 `git submodule update --remote` 并重新执行上述步骤 1，2 
+
+### 5.3. 编译你的程序
+
+我们在模板仓库中下发了 CMake 模板，你可以修改 `CMakeList.txt` 以新增源文件。
+
+注意，在 `test_local` 目录下应该有下发静态库 `libsimulator.a` 。我们将 `router.cpp` 也编译成静态库，并将 `libsimulator.a` 与 `librouter.a` 链接到 `simulator` 以生成完整的模拟器可执行程序。 
+你可以通过在根目录的 `build` 目录中执行 `make` 命令，在本地编译生成 `simulator` 来运行并测试你的路由器。
+
+请不要修改下发文件中的 `simulator.cpp` 并保证链接时 `libsimulator` 位于 `librouter` 之前。否则将无法正常测试。
+
+### 5.4. debug mode
+
+为了便于调试，我们为 `simulator` 提供了 debug 模式。
 
 你可以通过执行 `./simulator 0` 来运行 debug 模式。在该模式下，你可以认为 `simulator` 提供了一个运行 `controller` 与 `router` 的模拟器，你可以通过以下指令进行调试
 
@@ -322,18 +352,114 @@ hostsend 10.0.0.0 102.0.0.0 Hi
 extersend 1 102.0.0.0 117.117.117.0 Hello
 ```
 
-### 5.2. 本地测试
+### 5.5. 本地测试
 
-你可以通过执行 `./test` 来运行本地测试。你可以通过参数指定特定测试点进行测试，详情可以参考 Lab 1 。
+你可以通过执行 `./lab3_test` 来运行本地测试。
+
+> 注意，请不要修改生成的可执行文件名 (simulator) 
+
+你可以通过参数指定特定测试点进行测试，使用方式与 Lab 1 一致。
 
 我们保证所有的 `host` 均具有合法且唯一的内网地址，所有路由器的外网端口地址和可用公网地址不重合。
 
 ## 6. 分数计算
 
-本次Lab总分 110 分
+本次Lab总分 120 分
 
 部分测试点在 Deadline 前放出，全部测试点会在 Deadline 后统一进行测试。我们会在数据点内容中详细描述所有测试点的测试内容。
 
-同学们可以通过 Github 进行自动化测试（Deadline 前只会看到满分为 90 分）。
+同学们可以通过 Github 进行自动化测试（Deadline 前只会看到满分为 100 分）。
 
 ### 6.1. 数据点
+
+每一个测试点名由 `${类别}.${测试点名称}` 构成
+
+> 注意，数据点中无修改操作是指：在最初设置好网络中的路由器， host 与他们之间的连接后，不会修改边权，加边，删边。测试程序通过 5.4. 中的指令进行测试，因此你可以认为所有 10/11 指令均在 1-6 指令之后。
+
+所有数据点保证路由器数量不超过 100 个， host 数量不超过 300 个， 所有路由器的可用公网地址数量之和不超过 1024 个
+
+<table>
+    <tr>
+        <td>类别</td>
+        <td>测试点名称</td>
+        <td>分数占比</td>
+        <td>ddl 前放出</td>
+        <td>数据点内容</td>
+    </tr>
+    <tr>
+        <td rowspan="7">Routing</td>
+        <td>Forward</td>
+        <td>10</td>
+        <td>是</td>
+        <td>单个路由器上的转发</td>
+    </tr>
+    <tr>
+        <td>Accessibility</td>
+        <td>10</td>
+        <td>是</td>
+        <td>无修改，测试路由算法能否正确计算连通性</td>
+    </tr>
+    <tr>
+        <td>DynamicAccessibility</td>
+        <td>10</td>
+        <td>是</td>
+        <td>测试路由算法能否正确计算连通性</td>
+    </tr>
+    <tr>
+        <td>StaticOptimal</td>
+        <td>10</td>
+        <td>是</td>
+        <td>无修改，测试路由算法是否得到最短路</td>
+    </tr>
+    <tr>
+        <td>DynamicOptimalAdd</td>
+        <td>10</td>
+        <td>是</td>
+        <td>仅有加边操作，测试路由算法是否得到最短路</td>
+    </tr>
+    <tr>
+        <td>DynamicOptimalDel</td>
+        <td>10</td>
+        <td>是</td>
+        <td>仅有删边操作，测试路由算法是否得到最短路</td>
+    </tr>
+    <tr>
+        <td>DynamicOptimalMix</td>
+        <td>10</td>
+        <td>否</td>
+        <td>所有修改均存在，测试路由算法是否得到最短路</td>
+    </tr>
+    <tr>
+        <td rowspan="2">NAT</td>
+        <td>Basic</td>
+        <td>10</td>
+        <td>是</td>
+        <td>单路由器，不含 release 命令，测试 NAT 功能</td>
+    </tr>
+    <tr>
+        <td>Dynamic</td>
+        <td>10</td>
+        <td>是</td>
+        <td>单路由器，含 release 命令，测试 NAT 功能</td>
+    </tr>
+    <tr>
+        <td rowspan="3">General</td>
+        <td>Static</td>
+        <td>10</td>
+        <td>是</td>
+        <td>多路由器，同时测试 NAT 与路由算法，不含修改操作</td>
+    </tr>
+    <tr>
+        <td>Dynamic1</td>
+        <td>10</td>
+        <td>否</td>
+        <td>无特殊限制</td>
+    </tr>
+    <tr>
+        <td>Dynamic2</td>
+        <td>10</td>
+        <td>否</td>
+        <td>无特殊限制</td>
+    </tr>
+</table>
+
