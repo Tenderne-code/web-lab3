@@ -294,7 +294,7 @@ while(1) {
 1. 从远程仓库 clone 
 2. 在根目录中执行 `git submodule update --init`
 3. 在根目录中执行 `git submodule update --remote`
-4. 在根目录中执行 `mkdir build && cd build && cmake ..`
+4. 在根目录中执行 `mkdir build`
 
 ### 5.2. 编译测试程序
 
@@ -311,8 +311,12 @@ while(1) {
 
 我们在模板仓库中下发了 CMake 模板，你可以修改 `CMakeList.txt` 以新增源文件。
 
-注意，在 `test_local` 目录下应该有下发静态库 `libsimulator.a` 。我们将 `router.cpp` 也编译成静态库，并将 `libsimulator.a` 与 `librouter.a` 链接到 `simulator` 以生成完整的模拟器可执行程序。 
-你可以通过在根目录的 `build` 目录中执行 `make` 命令，在本地编译生成 `simulator` 来运行并测试你的路由器。
+**注意，在 `test_local` 目录下应该有下发静态库 `libsimulator.a` ，在编译前你需要将该文件拷贝到根目录的 `build/` 目录中**。
+
+若 libsimulator 发生更新，你需要在根目录中执行 `git submodule update --remote` 后重新将其拷贝到 `build/` 中。
+
+我们将 `router.cpp` 也编译成静态库，并将 `libsimulator.a` 与 `librouter.a` 链接到 `simulator` 以生成完整的模拟器可执行程序。 
+你可以通过在根目录的 `build` 目录中执行 `cmake.. && make` 命令，在本地编译生成 `simulator` 来运行并测试你的路由器。
 
 请不要修改下发文件中的 `simulator.cpp` 并保证链接时 `libsimulator` 位于 `librouter` 之前。否则将无法正常测试。
 
