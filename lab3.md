@@ -426,7 +426,7 @@ extersend 1 102.0.0.0 117.117.117.0 Hello
     <tr>
         <td>DynamicOptimalMix</td>
         <td>10</td>
-        <td>否</td>
+        <td>是</td>
         <td>所有修改均存在，测试路由算法是否得到最短路</td>
     </tr>
     <tr>
