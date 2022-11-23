@@ -182,8 +182,8 @@ public:
 
 + `port_num` 表示该路由器的端口数，保证 `port_num` 大于 `0` 
 + `external_port` 表示该路由器的外网端口号，若 `external_port = 0` 则表示该路由器没有连接外网
-+ `external_addr` 表示该路由器所连接的外网的地址范围，其使用 CIDR 进行表示，例如 `177.0.0.0/24` 表示的地址范围为 `177.0.0.0` 到 `177.0.0.255` 
-+ `available_addr` 表示该路由器的可用公网地址范围，表示方式同 `external_addr` 
++ `external_addr` 表示该路由器所连接的外网的地址范围，其使用 CIDR 进行表示，例如 `177.0.0.0/24` 表示的地址范围为 `177.0.0.0` 到 `177.0.0.255` 。若 `external_port = 0` 该参数为空指针
++ `available_addr` 表示该路由器的可用公网地址范围，表示方式同 `external_addr` 。若 `external_port = 0` 该参数为空指针
 
 简单起见，我们约定 `external_addr` 和 `available_addr` 最多包含 256 个地址，我们不考虑保留地址与广播地址，因此 `0` 与 `255` 也是可用地址。
 
@@ -193,7 +193,7 @@ public:
 
 在初始化时，路由器仅有 **1** 号端口和外网端口处于开启状态。
 
-**当 `external_port = 0` 时， `external_addr` 与 `available_addr` 为空指针**
+**注意，当 `external_port = 0` 时， `external_addr` 与 `available_addr` 为空指针**
 
 #### 4.1.2. `router`
 
