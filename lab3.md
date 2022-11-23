@@ -326,6 +326,8 @@ while(1) {
 
 你可以通过执行 `./simulator 0` 来运行 debug 模式。在该模式下，你可以认为 `simulator` 提供了一个运行 `controller` 与 `router` 的模拟器，你可以通过以下指令进行调试
 
+> **注意，下述指令中 2-7 发送的报文仅发送到路由器的输入队列，而没有调用 `router()` ，只有当执行 8/9 时才会调用 `router()` 。而 10/11 则会立即调用 `router()` 并递归跟踪转发路径**。
+
 1. `new <port_num> <external_port> <external_addr> <available_addr>` 创建一个新的路由器，参数与 `router_init()` 的参数一致， `simulator` 将会返回创建的路由器的编号（正整数） 。该指令将会创建 router 实例并调用 `router_init()` 。注意，当 `external_port = 0` 时，你仍然需要再输入两个任意字符串，例如 `new 2 0 0 0`
 2. `link <router_id> <router_id> <weight>` 连接由 1 中返回的路由器编号指定的两个路由器，链路权值必须为**正整数**，端口号将由 controller 选择。该指令将会向两个路由器分别发送一条 `CHANGE PORT WEIGHT` 报文
 3. `cut <router_id> <router_id>` 断开两个路由器之间的连接。该指令将会向两个路由器分别发送一条 `<value>` 为 -1 的 `CHANGE PORT WEIGHT` 报文 
@@ -333,13 +335,11 @@ while(1) {
 5. `addhost <router_id> <addr>` 在对应路由器上连接一台 host ，其 ip 地址为 `<addr>` 。该指令将会向路由器发送一条 `ADD HOST` 报文
 6. `delhost <addr>` 删除地址为 `<addr>` 的 host 。该指令会向对应路由器发送一条 `<value>` 为 -1 的 `CHANGE PORT WEIGHT` 报文
 7. `trigger` 向所有路由器发送一条 `TRIGGER DV SEND` 报文
-8. `n` 使所有路由器收入一个包并执行一次转发
+8. `n` 使所有路由器从其对应的输入队列获取一个包并执行一次转发
 9. `ns` 不断执行 8 直到网络中不再有报文转发
 10. `hostsend <src_addr> <dst_addr> <payload>` 从 host `<src_addr>` 发送一条目的地址为 `<dst_addr>` 的数据报文， `<payload>` 为可选字段。`simulator` 将会返回路径长度与最后一跳报文的 src, dst, payload 
 11. `extersend <router_id> <src_addr> <dst_addr> <payload>` 从路由器的外网端口发送一条数据报文，源地址必须为外网地址， `<payload>` 为可选字段。`simulator` 将会返回路径长度与最后一跳报文的 src, dst, payload 
 12. `exit` 退出程序
-
-**注意，上述指令中 2-7 发送的报文仅发送到路由器的输入队列，而没有调用 `router()` ，只有当执行 8/9 时才会调用 `router()` 。而 10/11 则会立即调用 `router()` 并递归跟踪转发路径**。
 
 一个运行时的例子可以参考
 
