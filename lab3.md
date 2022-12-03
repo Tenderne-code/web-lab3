@@ -336,12 +336,13 @@ while(1) {
 4. `weight <router_id> <router_id> <weight>` 修改两个路由器之间的链路权值，链路权值必须为**正整数**。该指令将会向两个路由器分别发送一条 `CHANGE PORT WEIGHT` 报文
 5. `addhost <router_id> <addr>` 在对应路由器上连接一台 host ，其 ip 地址为 `<addr>` 。该指令将会向路由器发送一条 `ADD HOST` 报文
 6. `delhost <addr>` 删除地址为 `<addr>` 的 host 。该指令会向对应路由器发送一条 `<value>` 为 -1 的 `CHANGE PORT WEIGHT` 报文
-7. `trigger` 向所有路由器发送一条 `TRIGGER DV SEND` 报文
-8. `n` 使所有路由器从其对应的输入队列获取一个包并执行一次转发
-9. `ns` 不断执行 8 直到网络中不再有报文转发
-10. `hostsend <src_addr> <dst_addr> <payload>` 从 host `<src_addr>` 发送一条目的地址为 `<dst_addr>` 的数据报文， `<payload>` 为可选字段。`simulator` 将会返回路径长度与最后一跳报文的 src, dst, payload 
-11. `extersend <router_id> <src_addr> <dst_addr> <payload>` 从路由器的外网端口发送一条数据报文，源地址必须为外网地址， `<payload>` 为可选字段。`simulator` 将会返回路径长度与最后一跳报文的 src, dst, payload 
-12. `exit` 退出程序
+7. `release <router_id> <addr>` 表示释放对应路由器上内网 ip 为 `<addr>` 的 NAT 表项
+8. `trigger` 向所有路由器发送一条 `TRIGGER DV SEND` 报文
+9. `n` 使所有路由器从其对应的输入队列获取一个包并执行一次转发
+10. `ns` 不断执行 8 直到网络中不再有报文转发
+11. `hostsend <src_addr> <dst_addr> <payload>` 从 host `<src_addr>` 发送一条目的地址为 `<dst_addr>` 的数据报文， `<payload>` 为可选字段。`simulator` 将会返回路径长度与最后一跳报文的 src, dst, payload 
+12. `extersend <router_id> <src_addr> <dst_addr> <payload>` 从路由器的外网端口发送一条数据报文，源地址必须为外网地址， `<payload>` 为可选字段。`simulator` 将会返回路径长度与最后一跳报文的 src, dst, payload 
+13. `exit` 退出程序
 
 一个运行时的例子可以参考
 
