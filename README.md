@@ -1,2 +1,5 @@
 # Lab3-Documentation
-Lab3 Markdown Documentation
+
+# 实现一个简单的运行 DV 算法并支持 NAT 功能的路由器。
+
+将路由器实现为C++类，通过调用类成员该函数的方式模拟各个路由器接收、转发、发送报文的过程
